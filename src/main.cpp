@@ -35,7 +35,7 @@ int main(){
 
 	CGAL::convex_hull_3(points.begin() , points.end(), convexHull);
 
-    Rash::Raytracer raytracer(convexHull,45);
+    Rash::Raytracer raytracer(convexHull,30);
 
 	raytracer.renderHitpoints();
 
@@ -49,7 +49,7 @@ int main(){
 	std::vector<float> image = raytracer.renderImage();
 	raytracer.saveImage();
 
-	//system("eog image.ppm") ;
+    system("eog image.ppm") ;
 
 
 

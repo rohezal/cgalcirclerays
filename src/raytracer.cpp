@@ -65,7 +65,7 @@ void Rash::Raytracer::initRays(){
         glm::dvec3 raydirection = glm::normalize( glm::dvec3(circle[circle.size()-1].x,circle[circle.size()-1].y,circle[circle.size()-1].z) - startpoints_as_vector[a]);
         glm::dvec3 lastpoint = glm::dvec3(circle[circle.size()-1].x, circle[circle.size()-1].y, circle[circle.size()-1].z);
 
-        std::cout << CircleHelper::getDegrees(faceNormals_as_vector[a],circle,startpoints_as_vector[a]) << std::endl;
+        //std::cout << CircleHelper::getDegrees(faceNormals_as_vector[a],circle,startpoints_as_vector[a]) << std::endl;
 
 
 	}
@@ -82,15 +82,19 @@ std::vector<float> Rash::Raytracer::renderImage(){
 		{
 			size_t tid = omp_get_thread_num();
 			size_t number_of_threads = omp_get_num_procs();
-			for(size_t y = tid; y < number_of_ray_y; y=y+number_of_threads){
-				if(y >= number_of_ray_y){
+            for(size_t y = tid; y < number_of_ray_y; y=y+number_of_threads)
+            {
+                if(y >= number_of_ray_y)
+                {
 					break;
 				}
 
-				for(size_t x = 0; x < number_of_ray_x; x++){
+                for(size_t x = 0; x < number_of_ray_x; x++)
+                {
 					Ray_intersection hit = tree.first_intersection(rays[this->transformCoordinates(y,x)]);
 
-					if(hit){
+                    if(hit)
+                    {
 						const Point& point =  boost::get<Point>(hit->first);
 						const Primitive_id& primitive_id = boost::get<Primitive_id>(hit->second);
 
@@ -110,17 +114,21 @@ std::vector<float> Rash::Raytracer::renderImage(){
 						Vector v2(p1,p3);
 
 						Vector n = CGAL::cross_product(v1,v2);
-						n = n/ std::sqrt(n.squared_length());
+                        n = n/std::sqrt(n.squared_length());
 
 						const CGAL::Vector_3<Kernel> eye(Ray(Point(0,0,0), Point(0,0,-1)));
 						CGAL::Vector_3<Kernel> ray(rays[this->transformCoordinates(y,x)]);
 
 						float distance = CGAL::squared_distance(point,Point(0,0,0));
 
-						image[transformCoordinates(y,x)]=1.0f * std::abs((n/n.squared_length() * ray));
+                        //image[transformCoordinates(y,x)]=1.0f * std::abs((n/n.squared_length() * ray));
+                        //image[transformCoordinates(y,x)]=distance;
+                        image[transformCoordinates(y,x)]=1;
 					}
 
-					else{
+                    else
+                    {
+                        //std::cout << "This should not happen" << std::endl;
 						image[transformCoordinates(y,x)]=0.0f;
 					}
 				}
@@ -197,12 +205,13 @@ void Rash::Raytracer::cachePrimitves(){
 		Vector v1(p1,p2);
 		Vector v2(p1,p3);
 
-		Vector n = CGAL::cross_product(v1,v2);
-		Point centroid = CGAL::centroid(p1,p2,p3);
+        Vector n = (-1)*CGAL::cross_product(v1,v2);
+        n = n / std::sqrt(n.squared_length());
+        Point centroid = CGAL::centroid(p1,p2,p3) + n*0.00001;
 
-		faceNormals[primitive_id] = n;
+        faceNormals[primitive_id] = n;
 		startpoints[primitive_id] = centroid;
-		startpoints_as_vector.push_back(glm::dvec3(centroid.x(),centroid.y(), centroid.z()));
-		faceNormals_as_vector.push_back(glm::dvec3(n.x(),n.y(),n.z()));
+        startpoints_as_vector.push_back(glm::dvec3(centroid.x(),centroid.y(), centroid.z()));
+        faceNormals_as_vector.push_back(glm::normalize(glm::dvec3(n.x(),n.y(),n.z())));
 	}
 }

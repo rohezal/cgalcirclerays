@@ -29,8 +29,6 @@ std::vector<glm::dvec4> CircleHelper::getCircle(glm::dvec3 _center, glm::dvec3 _
 	float radian_divisor = 180.0f/3.141592;
 
 	float radians = _degrees /radian_divisor;
-    std::cout << "Radians: " << radians <<  "=" << _degrees << "/" << radian_divisor << std::endl;
-
 
 	glm::dvec4 end = points.back();
 	glm::dvec3 endpoint(end.x,end.y,end.z);
@@ -43,17 +41,15 @@ std::vector<glm::dvec4> CircleHelper::getCircle(glm::dvec3 _center, glm::dvec3 _
 
 	double distance = radius / std::tan(radians);
 
-    std::cout << "Distance: " << distance << " = " << radius << "/" << std::tan(radians) << " | Radians: " << radians << std::endl;
-
 	glm::dvec3 normal = _normal;
 	normal = glm::normalize(normal);
-//	glm::dvec3 center = _center + _normal*distance;
+    //	glm::dvec3 center = _center + _normal*distance;
 
 	glm::dvec3 n = glm::normalize(normal);
 
-//	float cos = glm::dot(up,n);
+    //	float cos = glm::dot(up,n);
 
-//	float sin = std::sqrt(1-(cos*cos)); //1 = cos*cos+sin*sin -> 1 - cos*cos = sin*sin
+    //	float sin = std::sqrt(1-(cos*cos)); //1 = cos*cos+sin*sin -> 1 - cos*cos = sin*sin
 
 	glm::dvec3 upvector = std::abs(glm::dot(n,glm::dvec3(0,1,0))) > 0.99 ? glm::dvec3(1,0,0) : glm::dvec3(0,1,0);
 
@@ -77,7 +73,8 @@ std::vector<glm::dvec4> CircleHelper::getCircle(glm::dvec3 _center, glm::dvec3 _
 		points[i] = transform*points[i];
 		points[i] = points[i] + glm::dvec4(_center,0);
 	}
-	return points;
+
+    return points;
 
 
 }
@@ -92,6 +89,9 @@ double CircleHelper::getDegrees(dvec3 _normal, const std::vector<dvec4> &_circle
 	float length = 0.0f;
 	size_t maxindex = 0;
 	glm::dvec4 center(_center,0);
+
+    _normal = glm::normalize(_normal);
+
 	for(size_t i = 0; i < _circle.size(); i++)
 	{
 		if(glm::length(_circle[i]- center) > length)
