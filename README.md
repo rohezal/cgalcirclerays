@@ -32,12 +32,15 @@ Than give the cgal mesh to the raytracer:
     Rash::Raytracer raytracer(convexHull,30,1024); //mesh, opening angle, number of points in the circle - sampling points
 
 Let the raytracer start:
+	
 	raytracer.renderImage();
 
 get the image from the raytracer:
-    std::vector<double> image = raytracer.renderImage();
+	
+	std::vector<double> image = raytracer.renderImage();
 
 If you want you can save it to a file:
+	
 	raytracer.saveImage(); //you can provide a filename as a string
 
 
