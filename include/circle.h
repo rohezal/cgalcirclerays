@@ -12,7 +12,7 @@
 class CircleHelper
 {
 public:
-    static std::vector<glm::dvec4> getCircle(glm::dvec3 _center, glm::dvec3 _normal, double _degrees);
+    static std::vector<glm::dvec4> getCircle(glm::dvec3 _center, glm::dvec3 _normal, double _degrees, size_t _number_of_points = 256);
     static double getDegrees(glm::dvec3 _vector,  glm::dvec3 _normal, const glm::dvec3& _center = glm::dvec3(0,0,0));
     static double getDegrees(glm::dvec3 _vector,  const std::vector<glm::dvec4> &_circle, const glm::dvec3& _center = glm::dvec3(0,0,0));
 

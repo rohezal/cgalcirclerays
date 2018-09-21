@@ -16,7 +16,8 @@ typedef CGAL::Point_3<Kernel>                      Point;
 
 
 
-int main(){
+int main()
+{
 	Polyhedron mesh;
 	ObjLoader<HalfedgeDS> objLoader("bunny.obj");
 	mesh.delegate(objLoader);
@@ -35,9 +36,9 @@ int main(){
 
 	CGAL::convex_hull_3(points.begin() , points.end(), convexHull);
 
-    Rash::Raytracer raytracer(convexHull,30);
+    Rash::Raytracer raytracer(convexHull,30,1024); //mesh, opening angle, number of points in the circle - sampling points
 
-	raytracer.renderHitpoints();
+    //raytracer.renderHitpoints();
 
 	double start = omp_get_wtime();
 	raytracer.renderImage();
@@ -46,8 +47,10 @@ int main(){
 	double elapsed_secs = end - start;
 	std::cout << "Time " << elapsed_secs << std::endl;
 
-	std::vector<float> image = raytracer.renderImage();
+    std::vector<double> image = raytracer.renderImage();
 	raytracer.saveImage();
+
+    std::cout << "Misses :" << raytracer.miss_counter << " | Rays: " << raytracer.rays.size() << std::endl;
 
     system("eog image.ppm") ;
 

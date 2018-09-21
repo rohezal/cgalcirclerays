@@ -1,13 +1,13 @@
 #include "../include/raytracer.h"
 
 
-Rash::Raytracer::Raytracer(const Polyhedron &_mesh, int _degrees):
+Rash::Raytracer::Raytracer(const Polyhedron &_mesh, int _degrees, int _number_of_points):
 	mesh(_mesh),
 	degrees(_degrees),
 	focal_length(1.2f),
 	origin(0,0,0),
 	number_of_ray_y(1024),
-	number_of_ray_x(1024),
+    number_of_ray_x(_number_of_points),
 	renderingDone(false),
 	tree(faces(_mesh).first,
 	faces(_mesh).second, _mesh),
@@ -17,13 +17,23 @@ Rash::Raytracer::Raytracer(const Polyhedron &_mesh, int _degrees):
 
 	number_of_ray_y  = startpoints_as_vector.size();
 	image.reserve(number_of_ray_y*number_of_ray_x);
-	rays.reserve(number_of_ray_y*number_of_ray_x);
+
+    rays.reserve(number_of_ray_y*number_of_ray_x);
+
+    /*
+    std::cout << "Number of Rays " << number_of_ray_y << "*" << number_of_ray_x <<std::endl;
+    for(size_t i = 0; i < number_of_ray_y*number_of_ray_x; i++)
+    {
+        rays.push_back( Ray(Point(0,0,0),Point(0,0,0)));
+    }
+    */
 
 
 	initRays();
 }
 
-void Rash::Raytracer::initRays(){
+void Rash::Raytracer::initRays()
+{
 	float cos = std::cos( degreesToRadian(degrees) );
 
 	float dx = 1.0f/focal_length/cos;
@@ -52,8 +62,9 @@ void Rash::Raytracer::initRays(){
 
 	for(size_t a = 0; a < number_of_ray_y; a++)
 	{
-		std::vector<glm::dvec4> circle(CircleHelper::getCircle(startpoints_as_vector[a],faceNormals_as_vector[a],degrees_opening));
-		for(size_t b = 0; b < circle.size(); b++)
+        std::vector<glm::dvec4> circle(CircleHelper::getCircle(startpoints_as_vector[a],faceNormals_as_vector[a],degrees_opening,number_of_ray_x));
+
+        for(size_t b = 0; b < circle.size(); b++)
 		{
 			Point start(startpoints_as_vector[a].x,startpoints_as_vector[a].y,startpoints_as_vector[a].z);
 			//Point end(dx-b*stepx, dy-a*stepy,-1);
@@ -70,9 +81,12 @@ void Rash::Raytracer::initRays(){
 
 	}
 
+    std::cout << "Rays: " <<  rays.size() << std::endl;
+
 }
 
-std::vector<float> Rash::Raytracer::renderImage(){
+std::vector<double> Rash::Raytracer::renderImage()
+{
 
 	if(renderingDone == true){
 		return image; //rays;
@@ -119,16 +133,17 @@ std::vector<float> Rash::Raytracer::renderImage(){
 						const CGAL::Vector_3<Kernel> eye(Ray(Point(0,0,0), Point(0,0,-1)));
 						CGAL::Vector_3<Kernel> ray(rays[this->transformCoordinates(y,x)]);
 
-						float distance = CGAL::squared_distance(point,Point(0,0,0));
+                        double distance = CGAL::squared_distance(point, rays[this->transformCoordinates(y,x)].source());
 
                         //image[transformCoordinates(y,x)]=1.0f * std::abs((n/n.squared_length() * ray));
                         //image[transformCoordinates(y,x)]=distance;
-                        image[transformCoordinates(y,x)]=1;
+                        image[transformCoordinates(y,x)]=distance;
 					}
 
                     else
                     {
                         //std::cout << "This should not happen" << std::endl;
+                        miss_counter++;
 						image[transformCoordinates(y,x)]=0.0f;
 					}
 				}
@@ -136,6 +151,7 @@ std::vector<float> Rash::Raytracer::renderImage(){
 		}
 
 		renderingDone = true;
+        std::cout << "renderingDone " << renderingDone  << " | Rays Size: " << rays.size() << std::endl;
 		return image;
 	}
 }

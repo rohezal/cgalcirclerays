@@ -59,11 +59,6 @@ namespace Rash
     typedef Traits 	Geom_traits;
     typedef CGAL::Vector_3<Kernel> Vector;
 
-
-
-
-
-
 //AABB_face_graph_triangle_primitive< FaceGraph, VertexPointPMap, OneFaceGraphPerTree, CacheDatum >
 
 
@@ -91,7 +86,7 @@ namespace Rash
         const int degrees;
         const float focal_length;
         std::vector<Ray> rays;
-        std::vector<float> image;
+        std::vector<double> image;
         std::vector<Point> hitpoints;
         std::map<Primitive_id, Point> startpoints;
         std::vector<glm::dvec3> startpoints_as_vector;
@@ -107,12 +102,14 @@ namespace Rash
         const Polyhedron& mesh;
         float degrees_opening;
 
+        size_t miss_counter = 0;
+
         std::map<Primitive_id, Vector> faceNormals; //face, normal
         std::vector<glm::dvec3> faceNormals_as_vector; //face, normal
 
-        Raytracer(const Polyhedron& _mesh, int _degrees = 45);
+        Raytracer(const Polyhedron& _mesh, int _degrees, int _number_of_points = 256);
         void initRays();
-        std::vector<float> renderImage();
+        std::vector<double> renderImage();
 
         void initCircle(float radius, int numberOfPoints=64);
         std::vector<Point> translateCircle(const Point& center , const Vector& _normal);

@@ -4,16 +4,18 @@
 
 using namespace glm;
 
-CircleHelper::CircleHelper(){
+CircleHelper::CircleHelper()
+{
 
 }
 
-std::vector<glm::dvec4> CircleHelper::getCircle(glm::dvec3 _center, glm::dvec3 _normal, double _degrees)
+
+std::vector<glm::dvec4> CircleHelper::getCircle(glm::dvec3 _center, glm::dvec3 _normal, double _degrees, size_t _number_of_points)
 {
 	std::vector<glm::dvec4> points;
 
 	float golden_angle = 3.141592 * (3-std::sqrt(5));
-	float number_of_points = 256;
+    float number_of_points = _number_of_points;
 	float sqr_points = std::sqrt(number_of_points-1);
 
     for(int i = 0; i < number_of_points; i++)

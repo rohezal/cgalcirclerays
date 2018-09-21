@@ -38,6 +38,4 @@ target_link_libraries(${PROJECT_NAME} CGAL)
 
 
 
-
-
-#add_library(objloader SHARED main.cpp)
+add_library(circletracer SHARED ./src/circle.cpp ./src/raymanager.cpp ./src/raytracer.cpp)
