@@ -153,7 +153,31 @@ std::vector<double> Rash::Raytracer::renderImage()
 		renderingDone = true;
         std::cout << "renderingDone " << renderingDone  << " | Rays Size: " << rays.size() << std::endl;
 		return image;
-	}
+    }
+}
+
+std::vector<std::vector<double> > Rash::Raytracer::render2DImage()
+{
+    renderImage();
+    std::vector<std::vector<double> > image2d;
+    //image2d.push_back(std::vector<double>());
+
+
+    std::vector<double>::iterator it = image.begin();
+
+    const size_t stepsize = this->number_of_ray_x;
+    for(size_t i = 0; i < this->number_of_ray_y; i++)
+    {
+
+        image2d.push_back(std::vector<double>());
+        std::copy(it, it+stepsize,std::back_inserter(image2d[i]));
+        it = it+stepsize;
+        //std::copy()
+    }
+
+    return image2d;
+
+
 }
 
 void Rash::Raytracer::initCircle(float radius, int numberOfPoints){
@@ -162,6 +186,69 @@ void Rash::Raytracer::initCircle(float radius, int numberOfPoints){
 
 std::vector<Rash::Point> Rash::Raytracer::translateCircle(const Rash::Point &center, const Rash::Vector &_normal){
 
+}
+
+std::vector<double> Rash::Raytracer::getMin(std::vector<std::vector<double> > &_image2d)
+{
+    std::vector<double> mins;
+
+    for(size_t i = 0; i < _image2d.size(); i++)
+    {
+        std::vector<double> temp = _image2d[i];
+        std::sort(temp.begin(), temp.end());
+        mins.push_back(temp.front());
+    }
+
+    return mins;
+}
+
+std::vector<double> Rash::Raytracer::getMax(std::vector<std::vector<double> > &_image2d)
+{
+    std::vector<double> mins;
+
+    for(size_t i = 0; i < _image2d.size(); i++)
+    {
+        std::vector<double> temp = _image2d[i];
+        std::sort(temp.begin(), temp.end());
+        mins.push_back(temp.back());
+        //std::cout << "Max: " << temp.back() << std::endl;
+    }
+
+    return mins;
+}
+
+std::vector<double> Rash::Raytracer::getMedian(std::vector<std::vector<double> > &_image2d)
+{
+    std::vector<double> mins;
+
+    for(size_t i = 0; i < _image2d.size(); i++)
+    {
+        std::vector<double> temp = _image2d[i];
+        std::sort(temp.begin(), temp.end());
+        mins.push_back(temp[temp.size()/2]);
+    }
+
+    return mins;
+}
+
+std::vector<double> Rash::Raytracer::getAverage(std::vector<std::vector<double> > &_image2d)
+{
+    std::vector<double> mins;
+
+    for(size_t i = 0; i < _image2d.size(); i++)
+    {
+        std::vector<double>& temp = _image2d[i];
+        double avg = 0;
+        for (size_t x = 0; x < temp.size(); x++)
+        {
+            avg += temp[x];
+        }
+        avg /= temp.size();
+
+        mins.push_back(avg);
+    }
+
+    return mins;
 }
 
 void Rash::Raytracer::renderHitpoints(){

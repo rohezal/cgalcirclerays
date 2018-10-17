@@ -110,6 +110,7 @@ namespace Rash
         Raytracer(const Polyhedron& _mesh, int _degrees, int _number_of_points = 256);
         void initRays();
         std::vector<double> renderImage();
+        std::vector<std::vector<double> > render2DImage();
 
         void initCircle(float radius, int numberOfPoints=64);
         std::vector<Point> translateCircle(const Point& center , const Vector& _normal);
@@ -133,6 +134,11 @@ namespace Rash
         {
             return number_of_ray_y;
         }
+
+        static std::vector<double> getMin(std::vector<std::vector<double> >& _image2d);
+        static std::vector<double> getMax(std::vector<std::vector<double> >& _image2d);
+        static std::vector<double> getMedian(std::vector<std::vector<double> >& _image2d);
+        static std::vector<double> getAverage(std::vector<std::vector<double> >& _image2d);
 
         void renderHitpoints();
 

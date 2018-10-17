@@ -52,6 +52,21 @@ int main()
 
     std::cout << "Misses :" << raytracer.miss_counter << " | Rays: " << raytracer.rays.size() << std::endl;
 
+
+    std::vector<std::vector<double> > image2d = raytracer.render2DImage();
+
+    std::cout << "2D Image y: " <<  image2d.size() << " x: " << image2d.front().size() << std::endl;
+
+    std::vector<double> maxs = Rash::Raytracer::getMax(image2d);
+    std::vector<double> mins =Rash::Raytracer::getMin(image2d);
+    std::vector<double> meds =Rash::Raytracer::getMedian(image2d);
+    std::vector<double> avgs =Rash::Raytracer::getAverage(image2d);
+
+    for (auto a : maxs) {
+        std::cout << a << " ";
+    }
+    std::cout << '\n';
+
     system("eog image.ppm") ;
 
 
